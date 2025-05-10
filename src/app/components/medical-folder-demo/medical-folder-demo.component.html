@@ -1,0 +1,20 @@
+<div class="medical-folder-demo">
+  <h2>Medical Records Explorer</h2>
+  <p>Click on folders to expand/collapse them and view record details</p>
+  
+  <div class="tree-container">
+    <app-medical-folder-tree [component]="rootFolder" [level]="0"></app-medical-folder-tree>
+  </div>
+  
+  <div class="info-panel">
+    <h3>About This Component</h3>
+    <p>This component demonstrates the Composite Design Pattern applied to medical records.</p>
+    <ul>
+      <li>The binary tree structure is converted to a composite hierarchy</li>
+      <li>Each node can be either a folder (composite) or a record (leaf)</li>
+      <li>Both types implement the same interface, allowing uniform treatment</li>
+      <li>Folders can contain other folders or records</li>
+      <li>The tree is dynamically expandable/collapsible</li>
+    </ul>
+  </div>
+</div> 

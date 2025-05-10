@@ -1,0 +1,50 @@
+.tree-node {
+    margin: 4px 0;
+    font-family: Arial, sans-serif;
+}
+
+.tree-item {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #f0f8ff;
+    }
+}
+
+.icon {
+    margin-right: 8px;
+    color: #4285F4;
+    font-size: 20px;
+}
+
+.node-name {
+    font-size: 14px;
+}
+
+.children {
+    margin-left: 4px;
+}
+
+.record-details {
+    margin: 8px 0 8px 28px;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    border-left: 2px solid #4285F4;
+}
+
+.detail-item {
+    margin: 4px 0;
+    font-size: 13px;
+
+    .detail-label {
+        font-weight: bold;
+        margin-right: 4px;
+        color: #666;
+    }
+}

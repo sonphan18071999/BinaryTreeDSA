@@ -1,0 +1,30 @@
+<div class="tree-node" [style.padding-left]="level * 20 + 'px'">
+  <div class="tree-item" (click)="toggleExpand()">
+    <span class="icon material-icons">{{ getIcon() }}</span>
+    <span class="node-name">{{ component.name }}</span>
+  </div>
+  
+  <div class="children" *ngIf="isExpanded && isFolder">
+    <ng-container *ngFor="let child of children">
+      <app-medical-folder-tree 
+        [component]="child" 
+        [level]="level + 1">
+      </app-medical-folder-tree>
+    </ng-container>
+  </div>
+  
+  <div *ngIf="!isFolder && isExpanded" class="record-details">
+    <div class="detail-item" *ngIf="component.display().date">
+      <span class="detail-label">Date:</span>
+      <span>{{ component.display().date | date }}</span>
+    </div>
+    <div class="detail-item" *ngIf="component.display().diagnosis">
+      <span class="detail-label">Diagnosis:</span>
+      <span>{{ component.display().diagnosis }}</span>
+    </div>
+    <div class="detail-item" *ngIf="component.display().treatment">
+      <span class="detail-label">Treatment:</span>
+      <span>{{ component.display().treatment }}</span>
+    </div>
+  </div>
+</div> 
