@@ -2,6 +2,21 @@
   <h2>Medical Records Explorer</h2>
   <p>Click on folders to expand/collapse them and view record details</p>
   
+  <div class="structure-toggle">
+    <label>
+      <input type="checkbox" [checked]="useBST" (change)="toggleStructure()" />
+      Use BST-based structure
+    </label>
+    <span class="structure-description" *ngIf="useBST">
+      <i class="fa-solid fa-info-circle"></i> 
+      Showing records organized by date in a BST
+    </span>
+    <span class="structure-description" *ngIf="!useBST">
+      <i class="fa-solid fa-info-circle"></i> 
+      Showing records organized by category
+    </span>
+  </div>
+  
   <div class="tree-container">
     <app-medical-folder-tree [component]="rootFolder" [level]="0"/>
   </div>

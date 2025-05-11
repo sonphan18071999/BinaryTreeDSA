@@ -3,6 +3,7 @@ import {
   MedicalFolder,
   MedicalRecordItem,
   MedicalComponentFactory,
+  convertTreeToComposite,
 } from '../../models/medical-folder.model';
 import { MedicalRecord, MedicalRecordTree } from '../../models/medical.class';
 import { CommonModule } from '@angular/common';
@@ -17,13 +18,118 @@ import { MedicalFolderTreeComponent } from '../medical-folder-tree/medical-folde
 })
 export class MedicalFolderDemoComponent implements OnInit {
   rootFolder!: MedicalFolder;
+  useBST = true; // Public property for template binding
 
   constructor() {}
 
   ngOnInit(): void {
-    const medicalTree = new MedicalRecordTree();
+    this.updateStructure();
+  }
 
-    const sampleRecords: MedicalRecord[] = [
+  /**
+   * Toggle between BST and manual structure
+   */
+  toggleStructure(): void {
+    this.useBST = !this.useBST;
+    this.updateStructure();
+  }
+
+  /**
+   * Update the folder structure based on current mode
+   */
+  private updateStructure(): void {
+    if (this.useBST) {
+      this.createBSTBasedStructure();
+    } else {
+      this.createManualStructure();
+    }
+  }
+
+  /**
+   * Creates a hierarchical folder structure using Binary Search Tree
+   */
+  private createBSTBasedStructure(): void {
+    const medicalTree = new MedicalRecordTree();
+    const sampleRecords = this.createSampleRecords();
+
+    // Insert records into BST
+
+    sampleRecords.forEach((record) => medicalTree.insert(record));
+
+    // Convert BST to composite structure
+    this.rootFolder = convertTreeToComposite(medicalTree);
+
+    // For debugging - log the structure
+    console.log('BST-based folder structure created:', this.rootFolder);
+  }
+
+  /**
+   * Creates a manually organized folder structure
+   */
+  private createManualStructure(): void {
+    // Create the main container
+    const rootFolder = MedicalComponentFactory.createFolder(
+      'root',
+      'Patient Records'
+    );
+
+    // Create and populate category folders
+    const folders = this.createCategoryFolders();
+    this.addFoldersToRoot(rootFolder, folders);
+
+    // Populate each category with appropriate records
+    this.populateAppointments(folders.appointmentsFolder);
+    this.populateDiagnoses(folders.diagnosisFolder);
+    this.populateTreatments(folders.treatmentFolder);
+    this.populateLabResults(folders.labResultsFolder);
+    this.populateMedications(folders.medicationsFolder);
+
+    // Set as the main folder
+    this.rootFolder = rootFolder;
+  }
+
+  /**
+   * Creates category folders for organizing medical records
+   */
+  private createCategoryFolders() {
+    return {
+      appointmentsFolder: MedicalComponentFactory.createFolder(
+        'appointments',
+        'Appointments'
+      ),
+      diagnosisFolder: MedicalComponentFactory.createFolder(
+        'diagnosis',
+        'Diagnoses'
+      ),
+      treatmentFolder: MedicalComponentFactory.createFolder(
+        'treatment',
+        'Treatments'
+      ),
+      labResultsFolder: MedicalComponentFactory.createFolder(
+        'lab-results',
+        'Lab Results'
+      ),
+      medicationsFolder: MedicalComponentFactory.createFolder(
+        'medications',
+        'Medications'
+      ),
+    };
+  }
+
+  /**
+   * Adds all category folders to the root folder
+   */
+  private addFoldersToRoot(rootFolder: MedicalFolder, folders: any): void {
+    Object.values(folders).forEach((folder) => {
+      rootFolder.addFolder(folder as MedicalFolder);
+    });
+  }
+
+  /**
+   * Creates sample medical records
+   */
+  private createSampleRecords(): MedicalRecord[] {
+    return [
       {
         id: 1,
         patientId: 101,
@@ -65,41 +171,12 @@ export class MedicalFolderDemoComponent implements OnInit {
         notes: 'Reaction to new medication',
       },
     ];
+  }
 
-    sampleRecords.forEach((record) => medicalTree.insert(record));
-
-    const manualRootFolder = MedicalComponentFactory.createFolder(
-      'manual-root',
-      'Patient Records'
-    );
-
-    const appointmentsFolder = MedicalComponentFactory.createFolder(
-      'appointments',
-      'Appointments'
-    );
-    const diagnosisFolder = MedicalComponentFactory.createFolder(
-      'diagnosis',
-      'Diagnoses'
-    );
-    const treatmentFolder = MedicalComponentFactory.createFolder(
-      'treatment',
-      'Treatments'
-    );
-    const labResultsFolder = MedicalComponentFactory.createFolder(
-      'lab-results',
-      'Lab Results'
-    );
-    const medicationsFolder = MedicalComponentFactory.createFolder(
-      'medications',
-      'Medications'
-    );
-
-    manualRootFolder.addFolder(appointmentsFolder);
-    manualRootFolder.addFolder(diagnosisFolder);
-    manualRootFolder.addFolder(treatmentFolder);
-    manualRootFolder.addFolder(labResultsFolder);
-    manualRootFolder.addFolder(medicationsFolder);
-
+  /**
+   * Populates the Appointments folder with relevant records
+   */
+  private populateAppointments(folder: MedicalFolder): void {
     const checkupRecord = MedicalComponentFactory.createRecord(
       3,
       'Annual Checkup',
@@ -108,7 +185,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       'No treatment needed',
       'All vitals normal'
     );
-    appointmentsFolder.addRecord(checkupRecord);
 
     const followUpRecord = MedicalComponentFactory.createRecord(
       6,
@@ -118,7 +194,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       'No further treatment needed',
       'Recovery proceeding well'
     );
-    appointmentsFolder.addRecord(followUpRecord);
 
     const specialistRecord = MedicalComponentFactory.createRecord(
       7,
@@ -128,8 +203,16 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Additional tests recommended',
       'Referred for echocardiogram'
     );
-    appointmentsFolder.addRecord(specialistRecord);
 
+    folder.addRecord(checkupRecord);
+    folder.addRecord(followUpRecord);
+    folder.addRecord(specialistRecord);
+  }
+
+  /**
+   * Populates the Diagnoses folder with relevant records
+   */
+  private populateDiagnoses(folder: MedicalFolder): void {
     const coldRecord = MedicalComponentFactory.createRecord(
       1,
       'Common Cold',
@@ -138,7 +221,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Rest and fluids',
       'Patient reported symptoms 2 days ago'
     );
-    diagnosisFolder.addRecord(coldRecord);
 
     const hypertensionRecord = MedicalComponentFactory.createRecord(
       8,
@@ -148,7 +230,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Prescribed ACE inhibitor',
       'Recommend lifestyle changes and follow-up in 3 months'
     );
-    diagnosisFolder.addRecord(hypertensionRecord);
 
     const migraineRecord = MedicalComponentFactory.createRecord(
       9,
@@ -158,8 +239,16 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Prescribed sumatriptan',
       'Advised to keep headache journal'
     );
-    diagnosisFolder.addRecord(migraineRecord);
 
+    folder.addRecord(coldRecord);
+    folder.addRecord(hypertensionRecord);
+    folder.addRecord(migraineRecord);
+  }
+
+  /**
+   * Populates the Treatments folder with relevant records
+   */
+  private populateTreatments(folder: MedicalFolder): void {
     const ankleRecord = MedicalComponentFactory.createRecord(
       2,
       'Sprained Ankle',
@@ -168,7 +257,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Ice and elevation',
       'Injury occurred during sports'
     );
-    treatmentFolder.addRecord(ankleRecord);
 
     const physicalTherapyRecord = MedicalComponentFactory.createRecord(
       10,
@@ -178,8 +266,15 @@ export class MedicalFolderDemoComponent implements OnInit {
       '8-week therapy program',
       'Twice weekly sessions recommended'
     );
-    treatmentFolder.addRecord(physicalTherapyRecord);
 
+    folder.addRecord(ankleRecord);
+    folder.addRecord(physicalTherapyRecord);
+  }
+
+  /**
+   * Populates the Lab Results folder with relevant records
+   */
+  private populateLabResults(folder: MedicalFolder): void {
     const bloodworkRecord = MedicalComponentFactory.createRecord(
       11,
       'Complete Blood Count',
@@ -188,7 +283,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       'No abnormalities detected',
       'All values within normal range'
     );
-    labResultsFolder.addRecord(bloodworkRecord);
 
     const cholesterolRecord = MedicalComponentFactory.createRecord(
       12,
@@ -198,8 +292,15 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Slightly elevated LDL',
       'Dietary changes recommended'
     );
-    labResultsFolder.addRecord(cholesterolRecord);
 
+    folder.addRecord(bloodworkRecord);
+    folder.addRecord(cholesterolRecord);
+  }
+
+  /**
+   * Populates the Medications folder with relevant records
+   */
+  private populateMedications(folder: MedicalFolder): void {
     const antibioticRecord = MedicalComponentFactory.createRecord(
       13,
       'Amoxicillin',
@@ -208,7 +309,6 @@ export class MedicalFolderDemoComponent implements OnInit {
       '500mg 3x daily for 10 days',
       'Take with food to reduce GI upset'
     );
-    medicationsFolder.addRecord(antibioticRecord);
 
     const painRelieveRecord = MedicalComponentFactory.createRecord(
       14,
@@ -218,8 +318,8 @@ export class MedicalFolderDemoComponent implements OnInit {
       '400mg every 6 hours as needed',
       'Do not exceed 1600mg in 24 hours'
     );
-    medicationsFolder.addRecord(painRelieveRecord);
 
-    this.rootFolder = manualRootFolder;
+    folder.addRecord(antibioticRecord);
+    folder.addRecord(painRelieveRecord);
   }
 }
