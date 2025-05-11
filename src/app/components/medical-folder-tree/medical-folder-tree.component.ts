@@ -16,18 +16,16 @@ export class MedicalFolderTreeComponent implements OnInit {
   @Input() component!: MedicalComponent;
   @Input() level: number = 0;
 
-  isExpanded: boolean = false;
-  isFolder: boolean = false;
-  children: MedicalComponent[] = [];
+  public isExpanded: boolean = false;
+  public isFolder: boolean = false;
+  public children: MedicalComponent[] = [];
 
   ngOnInit(): void {
     this.isFolder = this.component instanceof MedicalFolder;
     if (this.isFolder) {
       this.children = (this.component as MedicalFolder).getChildren();
       // Auto-expand first level
-      if (this.level === 0) {
-        this.isExpanded = true;
-      }
+      if (this.level === 0) this.isExpanded = true;
     }
   }
 
@@ -39,8 +37,10 @@ export class MedicalFolderTreeComponent implements OnInit {
 
   getIcon(): string {
     if (!this.isFolder) {
-      return 'description'; // File icon
+      return 'fa-regular fa-file-lines';
     }
-    return this.isExpanded ? 'folder_open' : 'folder'; // Folder icons
+    return this.isExpanded
+      ? 'fa-regular fa-folder-open'
+      : 'fa-regular fa-folder';
   }
 }

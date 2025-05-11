@@ -1,15 +1,31 @@
 <div class="tree-node" [style.padding-left]="level * 20 + 'px'">
   <div class="tree-item" (click)="toggleExpand()">
-    <span class="icon material-icons">{{ getIcon() }}</span>
-    <span class="node-name">{{ component.name }}</span>
+    <i class="icon" [class]="getIcon()"></i>
+    
+    <!-- Enhanced display for records -->
+    <ng-container *ngIf="!isFolder; else folderName">
+      <div class="record-info">
+        <span class="node-name">{{ component.name }}</span>
+        <span class="record-date" *ngIf="component.display().date">
+          <i class="fa-regular fa-calendar-days"></i> {{ component.display().date | date:'MMM d, y' }}
+        </span>
+        <span class="record-diagnosis" *ngIf="component.display().diagnosis">
+          <i class="fa-solid fa-stethoscope"></i> {{ component.display().diagnosis }}
+        </span>
+      </div>
+    </ng-container>
+    
+    <!-- Simple display for folders -->
+    <ng-template #folderName>
+      <span class="node-name">{{ component.name }}</span>
+    </ng-template>
   </div>
   
   <div class="children" *ngIf="isExpanded && isFolder">
     <ng-container *ngFor="let child of children">
       <app-medical-folder-tree 
         [component]="child" 
-        [level]="level + 1">
-      </app-medical-folder-tree>
+        [level]="level + 1"/>
     </ng-container>
   </div>
   

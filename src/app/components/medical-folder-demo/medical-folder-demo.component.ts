@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   MedicalFolder,
   MedicalRecordItem,
-  convertTreeToComposite,
 } from '../../models/medical-folder.model';
 import { MedicalRecord, MedicalRecordTree } from '../../models/medical.class';
 import { CommonModule } from '@angular/common';
@@ -21,10 +20,8 @@ export class MedicalFolderDemoComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    // Create a sample medical record tree
     const medicalTree = new MedicalRecordTree();
 
-    // Add sample records
     const sampleRecords: MedicalRecord[] = [
       {
         id: 1,
@@ -68,14 +65,8 @@ export class MedicalFolderDemoComponent implements OnInit {
       },
     ];
 
-    // Insert records into tree
     sampleRecords.forEach((record) => medicalTree.insert(record));
 
-    // Convert the binary tree to composite structure
-    // this.rootFolder = convertTreeToComposite(medicalTree);
-
-    // Optionally, create a more structured organization using Composite pattern
-    // This demonstrates manual creation of a hierarchical structure
     const manualRootFolder = new MedicalFolder(
       'manual-root',
       'Patient Records'
@@ -225,8 +216,6 @@ export class MedicalFolderDemoComponent implements OnInit {
     medicationsFolder.add(painRelieveRecord);
 
     // Use the auto-generated tree instead of the manual one for this demo
-    // this.rootFolder = manualRootFolder;
-    this.rootFolder = manualRootFolder; // Use the manual mock data structure
-    // this.rootFolder = convertTreeToComposite(medicalTree); // Comment out the auto-generated tree
+    this.rootFolder = manualRootFolder;
   }
 }
