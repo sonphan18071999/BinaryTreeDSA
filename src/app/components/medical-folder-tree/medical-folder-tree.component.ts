@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   MedicalComponent,
   MedicalFolder,
+  isFolder,
+  isRecord,
 } from '../../models/medical-folder.model';
 import { CommonModule } from '@angular/common';
 
@@ -21,7 +23,7 @@ export class MedicalFolderTreeComponent implements OnInit {
   public children: MedicalComponent[] = [];
 
   ngOnInit(): void {
-    this.isFolder = this.component instanceof MedicalFolder;
+    this.isFolder = isFolder(this.component);
     if (this.isFolder) {
       this.children = (this.component as MedicalFolder).getChildren();
       // Auto-expand first level
@@ -36,7 +38,7 @@ export class MedicalFolderTreeComponent implements OnInit {
   }
 
   getIcon(): string {
-    if (!this.isFolder) {
+    if (this.component.isLeaf()) {
       return 'fa-regular fa-file-lines';
     }
     return this.isExpanded

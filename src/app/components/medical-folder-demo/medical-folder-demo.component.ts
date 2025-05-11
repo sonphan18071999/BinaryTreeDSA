@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   MedicalFolder,
   MedicalRecordItem,
+  MedicalComponentFactory,
 } from '../../models/medical-folder.model';
 import { MedicalRecord, MedicalRecordTree } from '../../models/medical.class';
 import { CommonModule } from '@angular/common';
@@ -67,30 +68,39 @@ export class MedicalFolderDemoComponent implements OnInit {
 
     sampleRecords.forEach((record) => medicalTree.insert(record));
 
-    const manualRootFolder = new MedicalFolder(
+    const manualRootFolder = MedicalComponentFactory.createFolder(
       'manual-root',
       'Patient Records'
     );
 
-    // Create category folders
-    const appointmentsFolder = new MedicalFolder(
+    const appointmentsFolder = MedicalComponentFactory.createFolder(
       'appointments',
       'Appointments'
     );
-    const diagnosisFolder = new MedicalFolder('diagnosis', 'Diagnoses');
-    const treatmentFolder = new MedicalFolder('treatment', 'Treatments');
-    const labResultsFolder = new MedicalFolder('lab-results', 'Lab Results');
-    const medicationsFolder = new MedicalFolder('medications', 'Medications');
+    const diagnosisFolder = MedicalComponentFactory.createFolder(
+      'diagnosis',
+      'Diagnoses'
+    );
+    const treatmentFolder = MedicalComponentFactory.createFolder(
+      'treatment',
+      'Treatments'
+    );
+    const labResultsFolder = MedicalComponentFactory.createFolder(
+      'lab-results',
+      'Lab Results'
+    );
+    const medicationsFolder = MedicalComponentFactory.createFolder(
+      'medications',
+      'Medications'
+    );
 
-    // Add category folders to root
-    manualRootFolder.add(appointmentsFolder);
-    manualRootFolder.add(diagnosisFolder);
-    manualRootFolder.add(treatmentFolder);
-    manualRootFolder.add(labResultsFolder);
-    manualRootFolder.add(medicationsFolder);
+    manualRootFolder.addFolder(appointmentsFolder);
+    manualRootFolder.addFolder(diagnosisFolder);
+    manualRootFolder.addFolder(treatmentFolder);
+    manualRootFolder.addFolder(labResultsFolder);
+    manualRootFolder.addFolder(medicationsFolder);
 
-    // Add records to appropriate folders
-    const checkupRecord = new MedicalRecordItem(
+    const checkupRecord = MedicalComponentFactory.createRecord(
       3,
       'Annual Checkup',
       new Date('2023-07-22'),
@@ -98,10 +108,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'No treatment needed',
       'All vitals normal'
     );
-    appointmentsFolder.add(checkupRecord);
+    appointmentsFolder.addRecord(checkupRecord);
 
-    // Add more appointments
-    const followUpRecord = new MedicalRecordItem(
+    const followUpRecord = MedicalComponentFactory.createRecord(
       6,
       'Follow-up Visit',
       new Date('2023-08-15'),
@@ -109,9 +118,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'No further treatment needed',
       'Recovery proceeding well'
     );
-    appointmentsFolder.add(followUpRecord);
+    appointmentsFolder.addRecord(followUpRecord);
 
-    const specialistRecord = new MedicalRecordItem(
+    const specialistRecord = MedicalComponentFactory.createRecord(
       7,
       'Specialist Consultation',
       new Date('2023-06-05'),
@@ -119,9 +128,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Additional tests recommended',
       'Referred for echocardiogram'
     );
-    appointmentsFolder.add(specialistRecord);
+    appointmentsFolder.addRecord(specialistRecord);
 
-    const coldRecord = new MedicalRecordItem(
+    const coldRecord = MedicalComponentFactory.createRecord(
       1,
       'Common Cold',
       new Date('2023-05-15'),
@@ -129,10 +138,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Rest and fluids',
       'Patient reported symptoms 2 days ago'
     );
-    diagnosisFolder.add(coldRecord);
+    diagnosisFolder.addRecord(coldRecord);
 
-    // Add more diagnoses
-    const hypertensionRecord = new MedicalRecordItem(
+    const hypertensionRecord = MedicalComponentFactory.createRecord(
       8,
       'Hypertension',
       new Date('2023-04-10'),
@@ -140,9 +148,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Prescribed ACE inhibitor',
       'Recommend lifestyle changes and follow-up in 3 months'
     );
-    diagnosisFolder.add(hypertensionRecord);
+    diagnosisFolder.addRecord(hypertensionRecord);
 
-    const migraineRecord = new MedicalRecordItem(
+    const migraineRecord = MedicalComponentFactory.createRecord(
       9,
       'Migraine',
       new Date('2023-03-21'),
@@ -150,9 +158,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Prescribed sumatriptan',
       'Advised to keep headache journal'
     );
-    diagnosisFolder.add(migraineRecord);
+    diagnosisFolder.addRecord(migraineRecord);
 
-    const ankleRecord = new MedicalRecordItem(
+    const ankleRecord = MedicalComponentFactory.createRecord(
       2,
       'Sprained Ankle',
       new Date('2023-02-10'),
@@ -160,10 +168,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Ice and elevation',
       'Injury occurred during sports'
     );
-    treatmentFolder.add(ankleRecord);
+    treatmentFolder.addRecord(ankleRecord);
 
-    // Add more treatments
-    const physicalTherapyRecord = new MedicalRecordItem(
+    const physicalTherapyRecord = MedicalComponentFactory.createRecord(
       10,
       'Physical Therapy',
       new Date('2023-02-25'),
@@ -171,10 +178,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       '8-week therapy program',
       'Twice weekly sessions recommended'
     );
-    treatmentFolder.add(physicalTherapyRecord);
+    treatmentFolder.addRecord(physicalTherapyRecord);
 
-    // Lab results
-    const bloodworkRecord = new MedicalRecordItem(
+    const bloodworkRecord = MedicalComponentFactory.createRecord(
       11,
       'Complete Blood Count',
       new Date('2023-07-20'),
@@ -182,9 +188,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'No abnormalities detected',
       'All values within normal range'
     );
-    labResultsFolder.add(bloodworkRecord);
+    labResultsFolder.addRecord(bloodworkRecord);
 
-    const cholesterolRecord = new MedicalRecordItem(
+    const cholesterolRecord = MedicalComponentFactory.createRecord(
       12,
       'Lipid Panel',
       new Date('2023-07-20'),
@@ -192,10 +198,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       'Slightly elevated LDL',
       'Dietary changes recommended'
     );
-    labResultsFolder.add(cholesterolRecord);
+    labResultsFolder.addRecord(cholesterolRecord);
 
-    // Medications
-    const antibioticRecord = new MedicalRecordItem(
+    const antibioticRecord = MedicalComponentFactory.createRecord(
       13,
       'Amoxicillin',
       new Date('2023-05-15'),
@@ -203,9 +208,9 @@ export class MedicalFolderDemoComponent implements OnInit {
       '500mg 3x daily for 10 days',
       'Take with food to reduce GI upset'
     );
-    medicationsFolder.add(antibioticRecord);
+    medicationsFolder.addRecord(antibioticRecord);
 
-    const painRelieveRecord = new MedicalRecordItem(
+    const painRelieveRecord = MedicalComponentFactory.createRecord(
       14,
       'Ibuprofen',
       new Date('2023-02-10'),
@@ -213,9 +218,8 @@ export class MedicalFolderDemoComponent implements OnInit {
       '400mg every 6 hours as needed',
       'Do not exceed 1600mg in 24 hours'
     );
-    medicationsFolder.add(painRelieveRecord);
+    medicationsFolder.addRecord(painRelieveRecord);
 
-    // Use the auto-generated tree instead of the manual one for this demo
     this.rootFolder = manualRootFolder;
   }
 }
